@@ -1,0 +1,37 @@
+
+package com.example.location;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity implements LocationListener{
+    TextView txtLat;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        txtLat = (TextView) findViewById(R.id.txt1);
+        LocationManager locationManager=(LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        boolean GPS=locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean NETWORK=locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if(GPS) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+        }
+        else if(NETWORK) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,0, this);
+        }
+
+    }
+    public void onLocationChanged(Location location) {
+        txtLat.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
+    }
+
+}
