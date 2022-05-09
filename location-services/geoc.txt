@@ -1,0 +1,83 @@
+package com.example.application;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import com.example.application.R;
+
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements LocationListener {
+    TextView txtLat, txtLong;
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        txtLat = (TextView) findViewById(R.id.txt1);
+        txtLong = (TextView) findViewById(R.id.txt2);
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean GPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean NETWORK = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            if (GPS) {
+
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            }
+            else if(NETWORK) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,0, this);
+            }
+
+        }
+        else{
+            return;
+        }
+
+    }
+
+    public void onLocationChanged(Location location) {
+        txtLat.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
+
+        Geocoder gc = new Geocoder(this);
+        if(gc.isPresent()){
+            List<Address> list=null;
+            try{
+                list = gc.getFromLocationName("Madurai, Madurai, Tamil Nadu, India, IN",1);
+            }
+            catch (Exception exc){
+
+            }
+            /*
+            Address address = list.get(0);
+            StringBuffer str = new StringBuffer();
+            str.append("Name: "+ address.getLocality() + "\n");
+            str.append("Sub-Admin Ares: " + address.getSubAdminArea() + "\n");
+            str.append("Admin Area: " + address.getAdminArea() + "\n");
+            str.append("Country: " + address.getCountryName() + "\n");
+            str.append("Country Code: " + address.getCountryCode() + "\n");
+            String strAddress = str.toString();
+            txtLong.setText(strAddress);
+            */
+            Address address=list.get(0);
+            txtLong.setText(address.getLatitude()+" "+address.getLatitude());
+        }
+
+    }
+
+}
