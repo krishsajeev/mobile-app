@@ -1,0 +1,29 @@
+package com.example.application;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.widget.TextView;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ReceiverCallNotAllowedException;
+import android.widget.TextView;
+
+public class Receiver extends BroadcastReceiver {
+
+    TextView t1;
+    Receiver(TextView t1){
+        this.t1=t1;
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        int percentage=intent.getIntExtra("level",0);
+        if(percentage!=0)
+        {
+            t1.setText(percentage+"%");
+        }
+
+    }
+}
