@@ -1,0 +1,63 @@
+package com.example.location;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements LocationListener{
+    TextView txtLat,txtLong;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        txtLat = (TextView) findViewById(R.id.txt1);
+        txtLong = (TextView) findViewById(R.id.txt2);
+
+        LocationManager locationManager=(LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        boolean GPS=locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean NETWORK=locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if(GPS) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+        }
+        else if(NETWORK) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,0, this);
+        }
+
+        Geocoder gc = new Geocoder(this);
+        if(gc.isPresent()){
+            List<Address> list=null;
+            try{
+                list = gc.getFromLocation(37.42279, -122.08506,1);
+            }
+            catch (Exception exc){
+
+            }
+            Address address = list.get(0);
+            StringBuffer str = new StringBuffer();
+            str.append("Name: "+ address.getLocality() + "\n");
+            str.append("Sub-Admin Ares: " + address.getSubAdminArea() + "\n");
+            str.append("Admin Area: " + address.getAdminArea() + "\n");
+            str.append("Country: " + address.getCountryName() + "\n");
+            str.append("Country Code: " + address.getCountryCode() + "\n");
+            String strAddress = str.toString();
+            txtLong.setText(strAddress);
+        }
+
+
+    }
+    public void onLocationChanged(Location location) {
+        txtLat.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
+    }
+
+}
