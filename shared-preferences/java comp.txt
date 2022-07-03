@@ -1,0 +1,49 @@
+package com.example.myapplication;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.widget.EditText;
+
+public class MainActivity extends AppCompatActivity {
+    EditText name, phone;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        name=(EditText)findViewById(R.id.name);
+        phone=(EditText)findViewById(R.id.phone);
+
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+        // write all the data entered by the user in SharedPreference and apply
+        myEdit.putString("name", name.getText().toString());
+        myEdit.putInt("phone", Integer.parseInt(phone.getText().toString()));
+        myEdit.apply();
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        SharedPreferences sh = getSharedPreferences("pref", MODE_PRIVATE);
+
+        String s1 = sh.getString("name", "");
+        int a = sh.getInt("phone", 0);
+
+        name.setText(s1);
+        phone.setText(String.valueOf(a));
+
+    }
+}
